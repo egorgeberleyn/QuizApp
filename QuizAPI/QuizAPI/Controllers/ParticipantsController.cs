@@ -33,6 +33,9 @@ namespace QuizAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Participant participant)
         {
+            var participantFromDb = await _participantRepository.GetParticipantAsync(participant.Id);
+            if(participantFromDb != null)
+                return Ok(participantFromDb);
             await _participantRepository.CreateParticipantAsync(participant);
             return Ok();
         }
@@ -48,7 +51,7 @@ namespace QuizAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync([FromBody] int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             var participantFromDb = await _participantRepository.GetParticipantAsync(id);
             if (participantFromDb == null)

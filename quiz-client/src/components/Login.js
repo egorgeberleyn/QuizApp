@@ -9,6 +9,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import useForm from "../hooks/useForm";
 import Center from "./Center";
+import { createAPIEndpoint, ENDPOINTS } from '../api';
 
 const getFreshModel = ()=>({
     name: '',
@@ -27,7 +28,10 @@ const {
 const login = e => {
     e.preventDefault();
     if(validate())
-        console.log(values);
+        createAPIEndpoint(ENDPOINTS.participants)
+          .post(values)
+          .then(res => console.log(res))
+          .catch(err => console.log(err))
 }
 
 const validate = () => {

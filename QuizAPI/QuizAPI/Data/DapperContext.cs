@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Npgsql;
 using System.Data;
 
 namespace QuizAPI.Data
@@ -11,6 +11,6 @@ namespace QuizAPI.Data
             _connectionString = configuration.GetConnectionString("DbConnection");
         }
         public IDbConnection CreateConnection()
-            => new SqlConnection(_connectionString);
+            => new NpgsqlConnection(_connectionString);
     }
 }

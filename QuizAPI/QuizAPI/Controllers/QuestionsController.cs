@@ -16,18 +16,26 @@ namespace QuizAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetQuestions() =>                    
+        public async Task<IActionResult> GetQuestions() =>
             Ok(await _questionRepository.GetAllQuestionsAsync());
         
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync([FromRoute] int id) =>        
-            Ok(await _questionRepository.GetQuestionAsync(id));
-        
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
+        {
+            var question = await _questionRepository.GetQuestionAsync(id);
+            return question != null
+                ? Ok(question)
+                : NotFound();
+        }
+            
         
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Question question)
         {
+            var questionFromDb = await _questionRepository.GetQuestionAsync(question.Id);
+            if(questionFromDb != null)
+                return Ok(questionFromDb);
             await _questionRepository.CreateQuestionAsync(question);
             return Ok();
         }
@@ -35,13 +43,19 @@ namespace QuizAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] Question question)
         {
-            await _questionRepository.UpdateQuestionAsync(question);
+            var questionFromDb = await _questionRepository.GetQuestionAsync(question.Id);
+            if(questionFromDb == null)
+                return NotFound();
+            await _questionRepository.UpdateQuestionAsync(questionFromDb);
             return Ok();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync([FromBody] int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
+            var questionFromDb = await _questionRepository.GetQuestionAsync(id);
+            if (questionFromDb == null)
+                return NotFound();
             await _questionRepository.DeleteQuestionAsync(id);
             return Ok();
         }
