@@ -4,11 +4,11 @@ namespace QuizAPI.Data.Interfaces
 {
     public interface IQuestionRepository
     {
-        Task Create(Question question);
-        Task Delete(int id);
-        Task Update(Question question);
+        Task CreateQuestionAsync(Question question);
+        Task DeleteQuestionAsync(int id);
+        Task UpdateQuestionAsync(Question question);
         
-        Task<Question> Get(int id);
-        Task<IEnumerable<Question>> GetAll();
+        Task<Question> GetQuestionAsync(int id);
+        Task<IEnumerable<Question>> GetAllQuestionsAsync();
     }
 }
