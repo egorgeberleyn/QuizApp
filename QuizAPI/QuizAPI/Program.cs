@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using QuizAPI.Data;
 using QuizAPI.Data.Interfaces;
 using QuizAPI.Data.Repository;
@@ -20,6 +21,13 @@ app.UseCors(options =>
     options.WithOrigins("http://localhost:3000")
     .AllowAnyMethod()
     .AllowAnyHeader());
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Images")),
+    RequestPath = "/Images"
+});
 
 if (app.Environment.IsDevelopment())
 {

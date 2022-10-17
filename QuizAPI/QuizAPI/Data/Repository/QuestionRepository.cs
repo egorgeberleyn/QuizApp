@@ -41,10 +41,18 @@ namespace QuizAPI.Data.Repository
             return await connection.QueryFirstOrDefaultAsync<Question>($"SELECT * FROM {TABLE_NAME} WHERE id = @Id", new { id });
         }
 
-        public async Task<IEnumerable<Question>> GetAllQuestionsAsync()
+        public async Task<IEnumerable<Question>> GetRandomQuestionsAsync()
         {
             using var connection = _context.CreateConnection();
-            return await connection.QueryAsync<Question>($"SELECT * FROM {TABLE_NAME}");
+            return await connection.QueryAsync<Question>($"SELECT Id, text, image_name as ImageName, option1, option2, option3, option4 FROM {TABLE_NAME} ORDER BY RANDOM() LIMIT 5");
+        }
+
+        public async Task<IEnumerable<Question>> GetQuestionsWithAnswersAsync(int[] qnIds)
+        {
+
+            using var connection = _context.CreateConnection();
+            var qnWithAnswers =  await connection.QueryAsync<Question>($"SELECT Id, text, image_name as ImageName, option1, option2, option3, option4, answer FROM {TABLE_NAME}");
+            return qnWithAnswers.Where(q => qnIds.Contains(q.Id));
         }
     }
 }

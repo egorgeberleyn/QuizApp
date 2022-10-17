@@ -6,10 +6,12 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useEffect } from "react";
 import useForm from "../hooks/useForm";
 import Center from "./Center";
 import { createAPIEndpoint, ENDPOINTS } from '../api';
+import { useStateContext } from "../hooks/useStateContext";
+import { useNavigate } from "react-router-dom";
 
 const getFreshModel = ()=>({
     name: '',
@@ -17,7 +19,11 @@ const getFreshModel = ()=>({
 });
 
 export default function Login() {
-const {
+
+  const {context, setContext, resetContext} = useStateContext();
+  const navigate = useNavigate();
+
+  const {
     values,
     setValues,
     errors,
@@ -25,12 +31,20 @@ const {
     handleInputChange
 } = useForm(getFreshModel);
     
+useEffect(() => {
+  resetContext()
+}, [])
+
+
 const login = e => {
     e.preventDefault();
     if(validate())
         createAPIEndpoint(ENDPOINTS.participants)
           .post(values)
-          .then(res => console.log(res))
+          .then(res => {
+            setContext({id: res.data.id})
+            navigate('/quiz')
+          })
           .catch(err => console.log(err))
 }
 
@@ -57,7 +71,7 @@ return (
               },
             }}
           >
-            <form noValidate autoComplete="off" onSubmit={login}>
+            <form noValidate autoComplete="on" onSubmit={login}>
               <TextField 
                 label="Email" name="email" value={values.email} onChange={handleInputChange} variant="outlined" 
                 {...(errors.email && {error:true, helperText:errors.email})} />

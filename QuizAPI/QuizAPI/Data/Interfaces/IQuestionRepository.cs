@@ -9,6 +9,7 @@ namespace QuizAPI.Data.Interfaces
         Task UpdateQuestionAsync(Question question);
         
         Task<Question> GetQuestionAsync(int id);
-        Task<IEnumerable<Question>> GetAllQuestionsAsync();
+        Task<IEnumerable<Question>> GetRandomQuestionsAsync();
+        Task<IEnumerable<Question>> GetQuestionsWithAnswersAsync(int[] qnIds);
     }
 }

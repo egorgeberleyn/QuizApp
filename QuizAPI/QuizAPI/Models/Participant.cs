@@ -11,5 +11,5 @@
         public int Score { get; set; }
         
         public int TimeTaken { get; set; }
-    }
+    }   
 }

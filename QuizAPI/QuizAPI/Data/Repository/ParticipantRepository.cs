@@ -31,7 +31,7 @@ namespace QuizAPI.Data.Repository
         public async Task UpdateParticipantAsync(Participant participant)
         {
             using var connection = _context.CreateConnection();
-            var sqlQuery = $"UPDATE {TABLE_NAME} SET name = @Name, email = @Email, score = @Score, time_taken = @TimeTaken WHERE id = @Id";
+            var sqlQuery = $"UPDATE {TABLE_NAME} SET score = @Score, time_taken = @TimeTaken WHERE id = @Id";
             await connection.ExecuteAsync(sqlQuery, participant);
         }
 
@@ -45,6 +45,12 @@ namespace QuizAPI.Data.Repository
         {
             using var connection = _context.CreateConnection();
             return await connection.QueryAsync<Participant>($"SELECT * FROM {TABLE_NAME}");
+        }
+
+        public async Task<Participant> GetParticipantByEmailAsync(string email)
+        {
+            using var connection = _context.CreateConnection();
+            return await connection.QueryFirstOrDefaultAsync<Participant>($"SELECT * FROM {TABLE_NAME} WHERE email = @Email", new { email });
         }
     }
 }

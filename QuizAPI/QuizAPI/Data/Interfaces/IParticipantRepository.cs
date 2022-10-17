@@ -10,5 +10,6 @@ namespace QuizAPI.Data.Interfaces
 
         Task<Participant> GetParticipantAsync(int id);
         Task<IEnumerable<Participant>> GetAllParticipantsAsync();
+        Task<Participant> GetParticipantByEmailAsync(string email);
     }
 }

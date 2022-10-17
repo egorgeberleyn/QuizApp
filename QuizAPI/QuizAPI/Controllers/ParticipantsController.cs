@@ -33,20 +33,24 @@ namespace QuizAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Participant participant)
         {
-            var participantFromDb = await _participantRepository.GetParticipantAsync(participant.Id);
+            var participantFromDb = await _participantRepository.GetParticipantByEmailAsync(participant.Email);
             if(participantFromDb != null)
                 return Ok(participantFromDb);
             await _participantRepository.CreateParticipantAsync(participant);
             return Ok();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] Participant participant)
+        [HttpPut("{id}")]       
+        public async Task<IActionResult> UpdateAsync(int id, Result result)
         {
-            var participantFromDb = await _participantRepository.GetParticipantAsync(participant.Id);
+            if(id != result.ParticipantId)
+                return BadRequest();            
+            var participantFromDb = await _participantRepository.GetParticipantAsync(id);
             if (participantFromDb == null)
                 return NotFound();
-            await _participantRepository.UpdateParticipantAsync(participant);
+            participantFromDb.TimeTaken = result.TimeTaken;
+            participantFromDb.Score = result.Score;
+            await _participantRepository.UpdateParticipantAsync(participantFromDb);
             return Ok();
         }
 

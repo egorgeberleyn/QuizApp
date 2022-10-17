@@ -16,9 +16,34 @@ namespace QuizAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetQuestions() =>
-            Ok(await _questionRepository.GetAllQuestionsAsync());
-        
+        public async Task<IActionResult> GetQuestions()
+        {
+            var questions = await _questionRepository.GetRandomQuestionsAsync();
+            return Ok(questions.Select(q =>
+                new
+                {
+                    q.Id,
+                    q.Text,
+                    q.ImageName,
+                    Options = new string[] { q.Option1, q.Option2, q.Option3, q.Option4 }
+                }));
+        }
+
+        [HttpPost] //переписать метод!
+        [Route("GetAnswers")]
+        public async Task<IActionResult> GetQuestionsWithAnswers(int[] qnIds)
+        {
+            var questions = await _questionRepository.GetQuestionsWithAnswersAsync(qnIds);
+            return Ok(questions.Select(q =>
+                new
+                {
+                    q.Id,
+                    q.Text,
+                    q.ImageName,
+                    Options = new string[] { q.Option1, q.Option2, q.Option3, q.Option4 },
+                    q.Answer
+                }));
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync([FromRoute] int id)
@@ -28,14 +53,11 @@ namespace QuizAPI.Controllers
                 ? Ok(question)
                 : NotFound();
         }
-            
-        
+
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Question question)
         {
-            var questionFromDb = await _questionRepository.GetQuestionAsync(question.Id);
-            if(questionFromDb != null)
-                return Ok(questionFromDb);
             await _questionRepository.CreateQuestionAsync(question);
             return Ok();
         }
@@ -44,7 +66,7 @@ namespace QuizAPI.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody] Question question)
         {
             var questionFromDb = await _questionRepository.GetQuestionAsync(question.Id);
-            if(questionFromDb == null)
+            if (questionFromDb == null)
                 return NotFound();
             await _questionRepository.UpdateQuestionAsync(questionFromDb);
             return Ok();
