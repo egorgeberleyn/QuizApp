@@ -25,7 +25,7 @@ export default function Quiz() {
             .then(res => {
                 setQns(res.data)
                 timer = setInterval(() => {
-                    setTimeTaken(prev => prev + 1)
+                    setTimeTaken(prev => prev + 0.5)
                 }, [1000])    
             })
             .catch(err => { console.log(err); })
