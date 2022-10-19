@@ -13,15 +13,9 @@ export default function Quiz() {
     const { context, setContext } = useStateContext()
     const navigate = useNavigate()
 
-    let timer;
-
-    const startTimer = () => {
-        timer = setInterval(() => {
-            setTimeTaken(prev => prev + 1)
-        }, [1000])
-    }
-
-    useEffect(() => {
+    
+    useEffect(() => {        
+        let timer    
         setContext({
             timeTaken: 0,
             selectedOptions: []
@@ -30,7 +24,9 @@ export default function Quiz() {
             .fetch() 
             .then(res => {
                 setQns(res.data)
-                startTimer()
+                timer = setInterval(() => {
+                    setTimeTaken(prev => prev + 1)
+                }, [1000])    
             })
             .catch(err => { console.log(err); })
 
